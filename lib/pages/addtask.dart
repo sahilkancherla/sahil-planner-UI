@@ -1,26 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:testf/pages/dashboard.dart';
 
 class AddTask extends StatefulWidget {
   @override
   _AddTaskState createState() => _AddTaskState();
 }
 
+class Item {
+  const Item(this.name);
+  final String name;
+}
+
 class _AddTaskState extends State<AddTask> {
   bool isSwitched = false;
-
+  Item selectedUser;
+  List<Item> users = <Item>[
+    const Item('Class 1'),
+    const Item('Class 2'),
+    const Item('Class 3'),
+    const Item('Class 4'),
+    const Item('Class 5'),
+    const Item('Class 6'),
+    const Item('Class 7'),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         //backgroundColor: Colors.white,
 
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.cancel, color: Colors.grey[700]),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           backgroundColor: Colors.white,
+          bottomOpacity: 0.0,
           elevation: 0.0,
+          /*
           leading: IconButton(
             icon: Icon(Icons.cancel, color: Colors.grey[600]),
             //tooltip: 'Next page',
-            onPressed: () {},
-          ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Dashboard()));
+            },
+          ),*/
         ),
         body: Container(
           color: Colors.grey[100],
@@ -71,6 +95,62 @@ class _AddTaskState extends State<AddTask> {
                                 color: Colors.grey[400]),
                           ),
                           autofocus: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+            Container(
+              width: 180,
+              margin: EdgeInsets.fromLTRB(0, 1.5, 0, 0),
+              padding: EdgeInsets.fromLTRB(25, 13, 5, 13),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Icon(Icons.class_, color: Colors.orangeAccent),
+                  Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                        width: 350,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<Item>(
+                            hint: Text("  Select item"),
+                            value: selectedUser,
+                            onChanged: (Item Value) {
+                              setState(() {
+                                selectedUser = Value;
+                              });
+                            },
+                            style: TextStyle(
+                                color: Colors.grey[700],
+                                fontWeight: FontWeight.w600,
+                                fontSize: 17),
+                            items: users.map((Item user) {
+                              return DropdownMenuItem<Item>(
+                                value: user,
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      user.name,
+                                      style: TextStyle(
+                                          color: Colors.grey[700],
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 17),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ],

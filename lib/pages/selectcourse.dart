@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'addtask.dart';
+
 class SelectCourse extends StatefulWidget {
   @override
   _SelectCourseState createState() => _SelectCourseState();
@@ -316,29 +318,35 @@ class _SelectCourseState extends State<SelectCourse> {
             Container(
               margin: EdgeInsets.fromLTRB(15, 0, 15, 5),
               padding: EdgeInsets.fromLTRB(30, 13, 5, 13),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    width: 180,
-                    //height: 50,
-                    child: Text(
-                      'World Literature',
-                      style: TextStyle(
-                        color: Colors.grey[800],
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddTask()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      width: 180,
+                      //height: 50,
+                      child: Text(
+                        'World Literature',
+                        style: TextStyle(
+                          color: Colors.grey[800],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                    child: Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey[500],
-                    ),
-                  )
-                ],
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Icon(
+                        Icons.chevron_right,
+                        color: Colors.grey[500],
+                      ),
+                    )
+                  ],
+                ),
               ),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
