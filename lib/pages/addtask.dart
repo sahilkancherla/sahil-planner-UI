@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:testf/models/classObject.dart';
+import 'package:testf/models/taskObject.dart';
 import 'package:testf/pages/dashboard.dart';
+
+import '../database_helper.dart';
 
 class AddTask extends StatefulWidget {
   @override
@@ -14,6 +18,10 @@ class Item {
 class _AddTaskState extends State<AddTask> {
   bool isSwitched = false;
   Item selectedUser;
+
+  String tempTaskName = "";
+  String tempNotes = "";
+
   List<Item> users = <Item>[
     const Item('Class 1'),
     const Item('Class 2'),
@@ -26,7 +34,7 @@ class _AddTaskState extends State<AddTask> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
 
         appBar: AppBar(
           leading: IconButton(
@@ -57,6 +65,12 @@ class _AddTaskState extends State<AddTask> {
               padding: EdgeInsets.fromLTRB(20, 13, 20, 13),
               //margin: ,
               child: TextField(
+                onSubmitted: (value) async {
+                  if(value != ""){
+                    tempTaskName = value;
+
+                  }
+                },
                 decoration: InputDecoration(
                   //border: OutlineInputBorder(),
                   //labelText: 'Enter Task Here',
@@ -84,6 +98,12 @@ class _AddTaskState extends State<AddTask> {
                         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                         width: 350,
                         child: TextField(
+                          onSubmitted: (value) async {
+                            if(value != ""){
+                              tempNotes = value;
+
+                            }
+                          },
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             //labelText: 'Enter Task Here',
@@ -170,7 +190,7 @@ class _AddTaskState extends State<AddTask> {
                 children: <Widget>[
                   IconButton(
                     icon:
-                        Icon(Icons.calendar_today, color: Colors.orangeAccent),
+                    Icon(Icons.calendar_today, color: Colors.orangeAccent),
                     //tooltip: 'Tap to open date picker',
                     onPressed: () {
                       showDatePicker(
@@ -245,50 +265,61 @@ class _AddTaskState extends State<AddTask> {
                 color: Colors.white,
               ),
             ),
-            Container(
-              margin: EdgeInsets.fromLTRB(120, 20, 120, 40),
-              padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    width: 80,
-                    child: Text(
-                      'Add task',
-                      style: TextStyle(
-                          color: Colors.orangeAccent,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17),
+
+            GestureDetector(
+              onTap: () async {
+                DatabaseHelper _dbHelper = DatabaseHelper();
+                TaskObject newTaskObject = TaskObject(taskName: tempTaskName, notes: tempNotes);
+
+                await _dbHelper.insertTask(newTaskObject);
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                margin: EdgeInsets.fromLTRB(120, 20, 120, 40),
+                padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      width: 80,
+                      child: Text(
+                        'Add task',
+                        style: TextStyle(
+                            color: Colors.orangeAccent,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17),
+                      ),
                     ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.orangeAccent,
+                      ),
+                    )
+                  ],
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    stops: [0],
+                    colors: [Colors.white],
                   ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.orangeAccent,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[200],
+                      blurRadius: 10.0,
+                      spreadRadius: 5.0,
+                      offset: Offset(0.0, 0.0),
                     ),
-                  )
-                ],
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  stops: [0],
-                  colors: [Colors.white],
+                  ],
                 ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[200],
-                    blurRadius: 10.0,
-                    spreadRadius: 5.0,
-                    offset: Offset(0.0, 0.0),
-                  ),
-                ],
               ),
-            ),
+            )
+
           ]),
         ));
   }

@@ -28,6 +28,21 @@ class _HomeState extends State<Home> {
         child: currentScreen,
         bucket: bucket,
       ),
+      /*
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.orangeAccent,
+        onPressed: () {
+          setState(
+            () {
+              currentScreen = AddTask();
+              currentTab = 2;
+            },
+          );
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      */
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         child: Container(

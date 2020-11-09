@@ -95,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
                             onPressed: () {
                               setState(
-                                () {
+                                    () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -705,12 +705,13 @@ class _DashboardState extends State<Dashboard> {
                   child: Icon(Icons.add),
                   backgroundColor: Colors.orangeAccent,
                   onPressed: () {
-                    setState(
-                      () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => AddTask()));
-                      },
-                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddTask()),
+                    ).then((value) {
+                      setState(() {});
+                    });
                   },
                 ),
               )
