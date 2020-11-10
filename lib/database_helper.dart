@@ -7,15 +7,15 @@ import 'models/taskObject.dart';
 class DatabaseHelper {
   Future<Database> database() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'homeworkplanner.db'),
+      join(await getDatabasesPath(), 'planner.db'),
 
       onCreate: (db, version) async{
         // Run the CREATE TABLE statement on the database.
 
-          await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT)");
-          await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT)");
+        await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT)");
+        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT)");
 
-          return db;
+        return db;
 
       },
       // Set the version. This executes the onCreate function and provides a
@@ -55,9 +55,12 @@ class DatabaseHelper {
   Future<List<TaskObject>> getTasks() async {
     Database _db = await database();
     List<Map<String, dynamic>> taskMap = await _db.query('tasks');
+
+    
     return List.generate(taskMap.length, (index) {
       print (taskMap.length);
-      return TaskObject(id: taskMap[index]['id'], taskName: taskMap[index]['taskName'], notes: taskMap[index]['notes']);
+      return TaskObject(id: taskMap[index]['id'], taskName: taskMap[index]['taskName'], notes: taskMap[index]['notes'], dueDate: taskMap[index]['dueDate'], className: taskMap[index]['className']);
+
     });
   }
 

@@ -1,9 +1,14 @@
+// ignore: avoid_web_libraries_in_flutter
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
-import 'package:testf/models/classObject.dart';
 import 'package:testf/models/taskObject.dart';
 import 'package:testf/pages/dashboard.dart';
+import 'package:testf/pages/seenotes.dart';
+import 'package:intl/intl.dart';
 
 import '../database_helper.dart';
+import 'home.dart';
 
 class AddTask extends StatefulWidget {
   @override
@@ -16,11 +21,15 @@ class Item {
 }
 
 class _AddTaskState extends State<AddTask> {
-  bool isSwitched = false;
-  Item selectedUser;
 
+
+  bool isSwitched = false;
+  Item selectedClass;
   String tempTaskName = "";
   String tempNotes = "";
+  DateTime selectedDate = DateTime.now();
+  String stringDate;
+
 
   List<Item> users = <Item>[
     const Item('Class 1'),
@@ -31,6 +40,21 @@ class _AddTaskState extends State<AddTask> {
     const Item('Class 6'),
     const Item('Class 7'),
   ];
+
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate, // Refer step 1
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        stringDate = new DateFormat.yMMMMd().format(selectedDate);
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,10 +165,10 @@ class _AddTaskState extends State<AddTask> {
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<Item>(
                             hint: Text("  Select item"),
-                            value: selectedUser,
+                            value: selectedClass,
                             onChanged: (Item Value) {
                               setState(() {
-                                selectedUser = Value;
+                                selectedClass = Value;
                               });
                             },
                             style: TextStyle(
@@ -192,14 +216,9 @@ class _AddTaskState extends State<AddTask> {
                     icon:
                     Icon(Icons.calendar_today, color: Colors.orangeAccent),
                     //tooltip: 'Tap to open date picker',
-                    onPressed: () {
-                      showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2015, 8),
-                        lastDate: DateTime(2101),
-                      );
-                    },
+                    onPressed: () => _selectDate(context)
+
+
                   ),
                   Column(
                     children: [
@@ -207,7 +226,7 @@ class _AddTaskState extends State<AddTask> {
                         width: 300,
                         padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
                         child: Text(
-                          'Due date: October 29, 2020',
+                          stringDate = new DateFormat.yMMMMd().format(selectedDate),
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontWeight: FontWeight.w600,
@@ -252,7 +271,6 @@ class _AddTaskState extends State<AddTask> {
                       onChanged: (value) {
                         setState(() {
                           isSwitched = value;
-                          print(isSwitched);
                         });
                       },
                       activeTrackColor: Colors.orangeAccent,
@@ -265,12 +283,12 @@ class _AddTaskState extends State<AddTask> {
                 color: Colors.white,
               ),
             ),
-
             GestureDetector(
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
-                TaskObject newTaskObject = TaskObject(taskName: tempTaskName, notes: tempNotes);
-
+                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate);
+                int i = 10;
+                print(newTaskObject.taskName);
                 await _dbHelper.insertTask(newTaskObject);
                 Navigator.of(context).pop();
               },
@@ -322,5 +340,90 @@ class _AddTaskState extends State<AddTask> {
 
           ]),
         ));
+            /**
+            Container(
+              margin: EdgeInsets.fromLTRB(120, 20, 120, 40),
+              padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      width: 80,
+                      child: TextButton(
+                        child: Text('Add task'),
+                        //style: TextStyle(color: Colors.grey[400]),
+                        style: TextButton.styleFrom(
+                          primary: Colors.grey[700],
+                        ),
+                        onPressed: () {
+                          setState(
+                                () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Home()));
+                            },
+                          );
+                        },
+                      )
+                    /**
+                     * TextButton(
+                        child: Text('See Notes'),
+                        //style: TextStyle(color: Colors.grey[400]),
+                        style: TextButton.styleFrom(
+                        primary: Colors.grey[700],
+                        ),
+                        onPressed: () {
+                        setState(
+                        () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                        builder: (context) => SeeNotes()));
+                        },
+                        );
+                        },
+                        )
+                        Text(
+                        'Add task',
+                        style: TextStyle(
+                        color: Colors.orangeAccent,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17),
+                        ),
+                     **/
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.orangeAccent,
+                    ),
+                  )
+                ],
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  stops: [0],
+                  colors: [Colors.white],
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5.0),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[200],
+                    blurRadius: 10.0,
+                    spreadRadius: 5.0,
+                    offset: Offset(0.0, 0.0),
+                  ),
+                ],
+              ),
+            ),
+          ]),
+        ));
+                **/
   }
 }
+

@@ -32,7 +32,7 @@ class _AddClassState extends State<AddClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
 
         appBar: AppBar(
           leading: IconButton(
@@ -127,7 +127,7 @@ class _AddClassState extends State<AddClass> {
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
                 ClassObject newClassObject = ClassObject(className: tempClassName, teacherName: tempTeacherName);
-
+                int i = 10;
                 await _dbHelper.insertClass(newClassObject);
                 Navigator.of(context).pop();
               },
