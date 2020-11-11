@@ -8,13 +8,13 @@ import 'models/taskObject.dart';
 class DatabaseHelper {
   Future<Database> database() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'planner1.db'),
+      join(await getDatabasesPath(), 'planner3.db'),
 
       onCreate: (db, version) async{
         // Run the CREATE TABLE statement on the database.
 
         await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT, color INTEGER)");
-        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT, isComplete TINYINT)");
+        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT, isComplete TINYINT, isImportant TINYINT)");
 
         return db;
 
@@ -77,26 +77,43 @@ class DatabaseHelper {
     await _db.update('tasks', taskMap, where: 'id = ?', whereArgs: whereArgs);
   }
 
-  Future<List<TaskObject>> getTasks() async {
+  Future<void> updateImportanceStatus(bool importanceStatus, int id) async {
     Database _db = await database();
-    List<Map<String, dynamic>> taskMap = await _db.query('tasks', orderBy: 'dueDate ASC');
+    final Map<String, dynamic> taskMap = {
+      "isImportant": importanceStatus ? 1 : 0
+    };
 
-    return List.generate(taskMap.length, (index) {
-      //DateTime parsedDate = DateTime.parse(taskMap[index]['dueDate']);
-      return TaskObject(id: taskMap[index]['id'], taskName: taskMap[index]['taskName'], notes: taskMap[index]['notes'], dueDate: taskMap[index]['dueDate'], className: taskMap[index]['className'], isComplete: taskMap[index]['isComplete']);
-
-    });
+    List<dynamic> whereArgs = new List<dynamic>();
+    whereArgs.add(id);
+    await _db.update('tasks', taskMap, where: 'id = ?', whereArgs: whereArgs);
   }
 
-  Future<void> deleteTask(int id) async {
-    Database _db = await database();
-    // Get a reference to the database.
+    Future<List<TaskObject>> getTasks() async {
+      Database _db = await database();
+      List<Map<String, dynamic>> taskMap = await _db.query(
+          'tasks', orderBy: 'dueDate ASC');
 
-    await _db.delete(
-      'tasks',
-      where: "id = ?",
-      whereArgs: [id],
-    );
-  }
+      return List.generate(taskMap.length, (index) {
+        //DateTime parsedDate = DateTime.parse(taskMap[index]['dueDate']);
+        return TaskObject(id: taskMap[index]['id'],
+            taskName: taskMap[index]['taskName'],
+            notes: taskMap[index]['notes'],
+            dueDate: taskMap[index]['dueDate'],
+            className: taskMap[index]['className'],
+            isComplete: taskMap[index]['isComplete'],
+            isImportant: taskMap[index]['isImportant']);
+      });
+    }
+
+    Future<void> deleteTask(int id) async {
+      Database _db = await database();
+      // Get a reference to the database.
+
+      await _db.delete(
+        'tasks',
+        where: "id = ?",
+        whereArgs: [id],
+      );
+    }
 
 }

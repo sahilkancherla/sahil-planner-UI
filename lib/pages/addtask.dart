@@ -308,7 +308,11 @@ class _AddTaskState extends State<AddTask> {
             GestureDetector(
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
-                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate);
+                if(stringDate == null)
+                  {
+                    stringDate = DateTime.now().toString();
+                  }
+                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0));
                 int i = 10;
                 print(newTaskObject.taskName);
                 await _dbHelper.insertTask(newTaskObject);

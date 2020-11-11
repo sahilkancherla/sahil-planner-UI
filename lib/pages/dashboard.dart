@@ -25,8 +25,10 @@ class MyBehavior extends ScrollBehavior {
 
 class _DashboardState extends State<Dashboard> {
   DatabaseHelper _dbHelper = DatabaseHelper();
-  bool checkBoxValue = false;
+  //Color _iconColor = Colors.grey;
   Map<int, dynamic> confettiControllers = new Map<int, dynamic>();
+  Map<int, dynamic> iconColors = new Map<int, dynamic>();
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +45,7 @@ class _DashboardState extends State<Dashboard> {
 
       return confettiControllers[id];
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,7 +177,24 @@ class _DashboardState extends State<Dashboard> {
                                                         );
                                                       },
                                                     ),
-                                                    Icon(Icons.notifications, color: Colors.orange[300]),
+                                                    IconButton(
+                                                        icon: Icon(Icons.notifications),
+                                                        //color: Colors.orange,
+                                                        color: iconColors[snapshot.data[index].id] = (snapshot.data[index].isImportant == 1 ? Colors.orange : Colors.grey),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            DatabaseHelper _dbHelper = DatabaseHelper();
+                                                            if(iconColors[snapshot.data[index].id] == Colors.orange)
+                                                              {
+                                                                iconColors[snapshot.data[index].id] = Colors.grey;
+                                                              }
+                                                            else
+                                                              iconColors[snapshot.data[index].id] = Colors.orange;
+
+                                                            _dbHelper.updateImportanceStatus(iconColors[snapshot.data[index].id] == Colors.orange, snapshot.data[index].id);
+                                                          });
+                                                          },
+                                                        ),
                                                   ],
                                                 ),
                                                 decoration: BoxDecoration(
