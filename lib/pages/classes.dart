@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:testf/pages/addclass.dart';
 
 import '../database_helper.dart';
+import 'classdetails.dart';
 
 class Classes extends StatefulWidget {
   @override
@@ -48,7 +49,15 @@ class _ClassesState extends State<Classes> {
                                   itemCount: snapshot.data.length,
                                   itemBuilder: (context, index){
                                     return(
-                                        Slidable(
+                                        GestureDetector(
+                                            onTap: () async {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => ClassDetails()),
+                                              );
+                                            },
+                                        child: Slidable(
                                           actionPane: SlidableDrawerActionPane(),
                                           actionExtentRatio: 0.25,
                                           child: Container(
@@ -128,7 +137,7 @@ class _ClassesState extends State<Classes> {
                                           ],
                                         )
                                         //This is the end of one class
-                                    );
+                                    ));
                                   },
                                 ),);
                               }
