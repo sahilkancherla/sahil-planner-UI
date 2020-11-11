@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:testf/models/classObject.dart';
+import 'package:testf/pages/addtask.dart';
 import 'package:testf/pages/dashboard.dart';
 
 import '../database_helper.dart';
@@ -32,7 +33,7 @@ class _AddClassState extends State<AddClass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
 
         appBar: AppBar(
           leading: IconButton(
@@ -127,7 +128,6 @@ class _AddClassState extends State<AddClass> {
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
                 ClassObject newClassObject = ClassObject(className: tempClassName, teacherName: tempTeacherName);
-
                 await _dbHelper.insertClass(newClassObject);
                 Navigator.of(context).pop();
               },
