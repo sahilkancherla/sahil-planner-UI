@@ -1,6 +1,7 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:testf/pages/seenotes.dart';
 import 'dart:math';
 
@@ -140,6 +141,15 @@ class _DashboardState extends State<Dashboard> {
                                                           width: 180,
                                                           child: Text(
                                                             snapshot.data[index].className,
+                                                            style: TextStyle(
+                                                                color: Colors.grey[400],
+                                                                fontWeight: FontWeight.w400),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: 180,
+                                                          child: Text(
+                                                            new DateFormat.yMMMMd().format(DateTime.parse(snapshot.data[index].dueDate)),
                                                             style: TextStyle(
                                                                 color: Colors.grey[400],
                                                                 fontWeight: FontWeight.w400),

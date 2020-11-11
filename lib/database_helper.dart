@@ -79,10 +79,10 @@ class DatabaseHelper {
 
   Future<List<TaskObject>> getTasks() async {
     Database _db = await database();
-    List<Map<String, dynamic>> taskMap = await _db.query('tasks');
+    List<Map<String, dynamic>> taskMap = await _db.query('tasks', orderBy: 'dueDate ASC');
 
     return List.generate(taskMap.length, (index) {
-      print (taskMap.length);
+      //DateTime parsedDate = DateTime.parse(taskMap[index]['dueDate']);
       return TaskObject(id: taskMap[index]['id'], taskName: taskMap[index]['taskName'], notes: taskMap[index]['notes'], dueDate: taskMap[index]['dueDate'], className: taskMap[index]['className'], isComplete: taskMap[index]['isComplete']);
 
     });

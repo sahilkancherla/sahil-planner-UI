@@ -31,6 +31,7 @@ class _AddTaskState extends State<AddTask> {
   String tempNotes = "";
   DateTime selectedDate = DateTime.now();
   String stringDate;
+  String displayDate;
   List<Item> users = new List<Item>();
 
   void getClassNames()
@@ -71,7 +72,8 @@ class _AddTaskState extends State<AddTask> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        stringDate = new DateFormat.yMMMMd().format(selectedDate);
+        stringDate = selectedDate.toString();
+        print(stringDate);
       });
   }
 
@@ -246,7 +248,7 @@ class _AddTaskState extends State<AddTask> {
                         width: 300,
                         padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
                         child: Text(
-                          stringDate = new DateFormat.yMMMMd().format(selectedDate),
+                          displayDate = new DateFormat.yMMMMd().format(selectedDate),
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontWeight: FontWeight.w600,
