@@ -12,7 +12,11 @@ import 'home.dart';
 
 class AddTask extends StatefulWidget {
   @override
-  _AddTaskState createState() => _AddTaskState();
+  _AddTaskState createState() {
+    _AddTaskState ats = new _AddTaskState();
+    ats.getClassNames();
+    return ats;
+  }
 }
 
 class Item {
@@ -21,15 +25,32 @@ class Item {
 }
 
 class _AddTaskState extends State<AddTask> {
-
-
   bool isSwitched = false;
   Item selectedClass;
   String tempTaskName = "";
   String tempNotes = "";
   DateTime selectedDate = DateTime.now();
   String stringDate;
+  String displayDate;
+  List<Item> users = new List<Item>();
 
+  void getClassNames()
+  {
+    DatabaseHelper _db = DatabaseHelper();
+    Future<List<String>> classNames = _db.getClassNames();
+    classNames.then((value) {
+      for (int i = 0; i < value.length; i++)
+        {
+          users.add(new Item(value[i]));
+        }
+    });
+  }
+/**
+  toSync(Future<List<Item>> f) {
+    Object v = null;
+    f.then((v0){v = v0;});
+    return v;
+  }
 
   List<Item> users = <Item>[
     const Item('Class 1'),
@@ -40,7 +61,7 @@ class _AddTaskState extends State<AddTask> {
     const Item('Class 6'),
     const Item('Class 7'),
   ];
-
+**/
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
@@ -51,7 +72,8 @@ class _AddTaskState extends State<AddTask> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
-        stringDate = new DateFormat.yMMMMd().format(selectedDate);
+        stringDate = selectedDate.toString();
+        print(stringDate);
       });
   }
 
@@ -226,7 +248,7 @@ class _AddTaskState extends State<AddTask> {
                         width: 300,
                         padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
                         child: Text(
-                          stringDate = new DateFormat.yMMMMd().format(selectedDate),
+                          displayDate = new DateFormat.yMMMMd().format(selectedDate),
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontWeight: FontWeight.w600,
@@ -286,7 +308,11 @@ class _AddTaskState extends State<AddTask> {
             GestureDetector(
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
-                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate);
+                if(stringDate == null)
+                  {
+                    stringDate = DateTime.now().toString();
+                  }
+                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0));
                 int i = 10;
                 print(newTaskObject.taskName);
                 await _dbHelper.insertTask(newTaskObject);
