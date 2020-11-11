@@ -11,7 +11,9 @@ import 'addtask.dart';
 
 class Dashboard extends StatefulWidget {
   @override
-  _DashboardState createState() => _DashboardState();
+  _DashboardState createState() {
+    return _DashboardState();
+  }
 
 }
 
@@ -28,7 +30,7 @@ class _DashboardState extends State<Dashboard> {
   //Color _iconColor = Colors.grey;
   Map<int, dynamic> confettiControllers = new Map<int, dynamic>();
   Map<int, dynamic> iconColors = new Map<int, dynamic>();
-
+  Color noteColor = Colors.white;
   @override
   void initState() {
     super.initState();
@@ -163,16 +165,22 @@ class _DashboardState extends State<Dashboard> {
                                                     TextButton(
                                                       child: Text('See Notes'),
                                                       //style: TextStyle(color: Colors.grey[400]),
+
+
                                                       style: TextButton.styleFrom(
-                                                        primary: Colors.grey[700],
+                                                        primary: iconColors[snapshot.data[index].id] = (snapshot.data[index].notes == "" ? Colors.white : Colors.grey[700])
                                                       ),
                                                       onPressed: () {
                                                         setState(
                                                               () {
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder: (context) => SeeNotes()));
+                                                                if(snapshot.data[index].notes != "")
+                                                                {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                  builder: (context) => SeeNotes(snapshot.data[index].notes)));
+                                                                }
+
                                                           },
                                                         );
                                                       },

@@ -94,6 +94,7 @@ class _ClassAssignmentsState extends State<ClassAssignments> {
                             style: TextButton.styleFrom(
                               primary: Colors.grey[700],
                             ),
+                            /*
                             onPressed: () {
                               setState(
                                     () {
@@ -103,7 +104,7 @@ class _ClassAssignmentsState extends State<ClassAssignments> {
                                           builder: (context) => SeeNotes()));
                                 },
                               );
-                            },
+                            }, */
                           ),
                           Icon(Icons.notifications, color: Colors.orange[300]),
                         ],
@@ -190,6 +191,7 @@ class _ClassAssignmentsState extends State<ClassAssignments> {
                             style: TextButton.styleFrom(
                               primary: Colors.white,
                             ),
+                            /*
                             onPressed: () {
                               setState(
                                     () {
@@ -199,7 +201,7 @@ class _ClassAssignmentsState extends State<ClassAssignments> {
                                           builder: (context) => SeeNotes()));
                                 },
                               );
-                            },
+                            },*/
                           ),
                           Icon(Icons.notifications, color: Colors.grey[300]),
                         ],
@@ -286,6 +288,7 @@ class _ClassAssignmentsState extends State<ClassAssignments> {
                             style: TextButton.styleFrom(
                               primary: Colors.white,
                             ),
+                            /*
                             onPressed: () {
                               setState(
                                     () {
@@ -295,7 +298,7 @@ class _ClassAssignmentsState extends State<ClassAssignments> {
                                           builder: (context) => SeeNotes()));
                                 },
                               );
-                            },
+                            }, */
                           ),
                           Icon(Icons.notifications, color: Colors.grey[300]),
                         ],
