@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
 class SeeNotes extends StatefulWidget {
+  final String notes;
+
   @override
+  SeeNotes(this.notes, {Key key}) : super (key: key);
   _SeeNotesState createState() => _SeeNotesState();
 }
 
 class _SeeNotesState extends State<SeeNotes> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +52,7 @@ class _SeeNotesState extends State<SeeNotes> {
                         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                         width: 360,
                         child: Text(
-                          'I do indeed believe that this hw will take a long time and I think that it would be much better for me if i did not',
+                          widget.notes,
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontWeight: FontWeight.w600,
