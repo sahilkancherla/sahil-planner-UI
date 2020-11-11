@@ -1,6 +1,8 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:testf/pages/seenotes.dart';
+import 'dart:math';
 
 import '../database_helper.dart';
 import 'addclass.dart';
@@ -22,6 +24,24 @@ class MyBehavior extends ScrollBehavior {
 
 class _DashboardState extends State<Dashboard> {
   DatabaseHelper _dbHelper = DatabaseHelper();
+  bool checkBoxValue = false;
+  Map<int, dynamic> confettiControllers = new Map<int, dynamic>();
+  @override
+  void initState() {
+    super.initState();
+
+  }
+  ConfettiController getController(int id)
+  {
+      if(confettiControllers[id] == null)
+        {
+          confettiControllers[id] = new ConfettiController(
+            duration: new Duration(seconds: 1),
+          );
+        }
+
+      return confettiControllers[id];
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +80,37 @@ class _DashboardState extends State<Dashboard> {
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: <Widget>[
+                                                    ConfettiWidget(
+                                                      blastDirection: pi/2,
+                                                      blastDirectionality: BlastDirectionality.explosive,
+                                                      confettiController: getController(snapshot.data[index].id),
+                                                      particleDrag: 0.05,
+                                                      emissionFrequency: 0.05,
+                                                      numberOfParticles: 40,
+                                                      gravity: 0.3,
+                                                      shouldLoop: false,
+                                                      colors: [
+                                                        Colors.green,
+                                                        Colors.red,
+                                                        Colors.yellow,
+                                                        Colors.blue,
+                                                      ],
+                                                    ),
+                                                    Checkbox(
+                                                        value: snapshot.data[index].isComplete == 1,
+                                                        activeColor: Colors.green[400],
+                                                        onChanged:  (bool value)  {
+                                                          setState(()  {
+                                                            DatabaseHelper _dbHelper = DatabaseHelper();
+                                                             _dbHelper.updateCompletionStatus(value, snapshot.data[index].id);
+                                                            if(value)
+                                                            {
+                                                                getController(snapshot.data[index].id).play();
+                                                            }
+                                                          });
+                                                        }
+                                                    ),
+                                                    /**
                                                     IconButton(
                                                         icon: Icon(Icons.radio_button_unchecked_outlined),
                                                         color: Colors.green[400],
@@ -71,6 +122,7 @@ class _DashboardState extends State<Dashboard> {
                                                           });
                                                         }
                                                         ),
+                                                            **/
                                                     Column(
                                                       children: [
                                                         Container(

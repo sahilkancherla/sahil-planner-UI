@@ -26,6 +26,7 @@ dependencies:
   flutter_slidable:
   basic_utils: ^2.6.3
   intl: ^0.16.1
+  confetti: ^0.5.4+1
   sqflite:
   path:
 

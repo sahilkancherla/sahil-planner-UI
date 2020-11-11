@@ -1,5 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:testf/pages/addclass.dart';
 
 import 'models/classObject.dart';
 import 'models/taskObject.dart';
@@ -7,13 +8,13 @@ import 'models/taskObject.dart';
 class DatabaseHelper {
   Future<Database> database() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'planner.db'),
+      join(await getDatabasesPath(), 'planner1.db'),
 
       onCreate: (db, version) async{
         // Run the CREATE TABLE statement on the database.
 
-        await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT)");
-        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT)");
+        await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT, color INTEGER)");
+        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT, isComplete TINYINT)");
 
         return db;
 
@@ -33,8 +34,21 @@ class DatabaseHelper {
     Database _db = await database();
     List<Map<String, dynamic>> classMap = await _db.query('classes');
     return List.generate(classMap.length, (index) {
-      return ClassObject(id: classMap[index]['id'], className: classMap[index]['className'], teacherName: classMap[index]['teacherName']);
+      return ClassObject(id: classMap[index]['id'], className: classMap[index]['className'], teacherName: classMap[index]['teacherName'], color: classMap[index]['color']);
     });
+  }
+
+  Future<List<Item>> getClassNames() async  {
+    List<Item> classNames = new List<Item>();
+    List<String> columnNames = new List<String>();
+    columnNames.add('className');
+    Database _db = await database();
+    List<Map<String, dynamic>> result = await _db.query('classes', distinct: true, columns: columnNames);
+    for(int i = 0; i < result.length; i++)
+      {
+        classNames.add(new Item((result[i])['className']));
+      }
+    return classNames;
   }
 
   Future<void> deleteClass(int id) async {
@@ -52,14 +66,24 @@ class DatabaseHelper {
     await _db.insert('tasks', taskObject.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<void> updateCompletionStatus(bool completionStatus, int id) async{
+    Database _db = await database();
+    final Map<String, dynamic> taskMap = {
+      "isComplete": completionStatus ? 1 : 0
+    };
+
+    List<dynamic> whereArgs = new List<dynamic>();
+    whereArgs.add(id);
+    await _db.update('tasks', taskMap, where: 'id = ?', whereArgs: whereArgs);
+  }
+
   Future<List<TaskObject>> getTasks() async {
     Database _db = await database();
     List<Map<String, dynamic>> taskMap = await _db.query('tasks');
 
-    
     return List.generate(taskMap.length, (index) {
       print (taskMap.length);
-      return TaskObject(id: taskMap[index]['id'], taskName: taskMap[index]['taskName'], notes: taskMap[index]['notes'], dueDate: taskMap[index]['dueDate'], className: taskMap[index]['className']);
+      return TaskObject(id: taskMap[index]['id'], taskName: taskMap[index]['taskName'], notes: taskMap[index]['notes'], dueDate: taskMap[index]['dueDate'], className: taskMap[index]['className'], isComplete: taskMap[index]['isComplete']);
 
     });
   }

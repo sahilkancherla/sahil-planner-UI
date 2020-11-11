@@ -213,10 +213,10 @@ class _AddTaskState extends State<AddTask> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   IconButton(
-                    icon:
-                    Icon(Icons.calendar_today, color: Colors.orangeAccent),
-                    //tooltip: 'Tap to open date picker',
-                    onPressed: () => _selectDate(context)
+                      icon:
+                      Icon(Icons.calendar_today, color: Colors.orangeAccent),
+                      //tooltip: 'Tap to open date picker',
+                      onPressed: () => _selectDate(context)
 
 
                   ),
@@ -340,90 +340,89 @@ class _AddTaskState extends State<AddTask> {
 
           ]),
         ));
-            /**
-            Container(
-              margin: EdgeInsets.fromLTRB(120, 20, 120, 40),
-              padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      width: 80,
-                      child: TextButton(
-                        child: Text('Add task'),
-                        //style: TextStyle(color: Colors.grey[400]),
-                        style: TextButton.styleFrom(
-                          primary: Colors.grey[700],
-                        ),
-                        onPressed: () {
-                          setState(
-                                () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home()));
-                            },
-                          );
-                        },
-                      )
-                    /**
-                     * TextButton(
-                        child: Text('See Notes'),
-                        //style: TextStyle(color: Colors.grey[400]),
-                        style: TextButton.styleFrom(
-                        primary: Colors.grey[700],
-                        ),
-                        onPressed: () {
-                        setState(
-                        () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                        builder: (context) => SeeNotes()));
-                        },
-                        );
-                        },
-                        )
-                        Text(
-                        'Add task',
-                        style: TextStyle(
-                        color: Colors.orangeAccent,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17),
-                        ),
-                     **/
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.orangeAccent,
-                    ),
-                  )
-                ],
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  stops: [0],
-                  colors: [Colors.white],
-                ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[200],
-                    blurRadius: 10.0,
-                    spreadRadius: 5.0,
-                    offset: Offset(0.0, 0.0),
-                  ),
-                ],
-              ),
-            ),
-          ]),
+    /**
+        Container(
+        margin: EdgeInsets.fromLTRB(120, 20, 120, 40),
+        padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+        child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+        Container(
+        margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
+        width: 80,
+        child: TextButton(
+        child: Text('Add task'),
+        //style: TextStyle(color: Colors.grey[400]),
+        style: TextButton.styleFrom(
+        primary: Colors.grey[700],
+        ),
+        onPressed: () {
+        setState(
+        () {
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => Home()));
+        },
+        );
+        },
+        )
+        /**
+     * TextButton(
+        child: Text('See Notes'),
+        //style: TextStyle(color: Colors.grey[400]),
+        style: TextButton.styleFrom(
+        primary: Colors.grey[700],
+        ),
+        onPressed: () {
+        setState(
+        () {
+        Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) => SeeNotes()));
+        },
+        );
+        },
+        )
+        Text(
+        'Add task',
+        style: TextStyle(
+        color: Colors.orangeAccent,
+        fontWeight: FontWeight.w600,
+        fontSize: 17),
+        ),
+     **/
+        ),
+        Container(
+        margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+        child: Icon(
+        Icons.check,
+        color: Colors.orangeAccent,
+        ),
+        )
+        ],
+        ),
+        decoration: BoxDecoration(
+        gradient: LinearGradient(
+        stops: [0],
+        colors: [Colors.white],
+        ),
+        borderRadius: BorderRadius.all(
+        Radius.circular(5.0),
+        ),
+        boxShadow: [
+        BoxShadow(
+        color: Colors.grey[200],
+        blurRadius: 10.0,
+        spreadRadius: 5.0,
+        offset: Offset(0.0, 0.0),
+        ),
+        ],
+        ),
+        ),
+        ]),
         ));
-                **/
+     **/
   }
 }
-
