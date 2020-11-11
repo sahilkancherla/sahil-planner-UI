@@ -38,15 +38,15 @@ class DatabaseHelper {
     });
   }
 
-  Future<List<Item>> getClassNames() async  {
-    List<Item> classNames = new List<Item>();
+  Future<List<String>> getClassNames() async  {
+    List<String> classNames = new List<String>();
     List<String> columnNames = new List<String>();
     columnNames.add('className');
     Database _db = await database();
     List<Map<String, dynamic>> result = await _db.query('classes', distinct: true, columns: columnNames);
     for(int i = 0; i < result.length; i++)
       {
-        classNames.add(new Item((result[i])['className']));
+        classNames.add((result[i])['className']);
       }
     return classNames;
   }

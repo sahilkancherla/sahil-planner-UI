@@ -12,7 +12,11 @@ import 'home.dart';
 
 class AddTask extends StatefulWidget {
   @override
-  _AddTaskState createState() => _AddTaskState();
+  _AddTaskState createState() {
+    _AddTaskState ats = new _AddTaskState();
+    ats.getClassNames();
+    return ats;
+  }
 }
 
 class Item {
@@ -21,15 +25,31 @@ class Item {
 }
 
 class _AddTaskState extends State<AddTask> {
-
-
   bool isSwitched = false;
   Item selectedClass;
   String tempTaskName = "";
   String tempNotes = "";
   DateTime selectedDate = DateTime.now();
   String stringDate;
+  List<Item> users = new List<Item>();
 
+  void getClassNames()
+  {
+    DatabaseHelper _db = DatabaseHelper();
+    Future<List<String>> classNames = _db.getClassNames();
+    classNames.then((value) {
+      for (int i = 0; i < value.length; i++)
+        {
+          users.add(new Item(value[i]));
+        }
+    });
+  }
+/**
+  toSync(Future<List<Item>> f) {
+    Object v = null;
+    f.then((v0){v = v0;});
+    return v;
+  }
 
   List<Item> users = <Item>[
     const Item('Class 1'),
@@ -40,7 +60,7 @@ class _AddTaskState extends State<AddTask> {
     const Item('Class 6'),
     const Item('Class 7'),
   ];
-
+**/
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
