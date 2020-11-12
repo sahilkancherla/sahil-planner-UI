@@ -40,6 +40,7 @@ class _DashboardState extends State<Dashboard> {
   }
   ConfettiController getController(int id)
   {
+
     if(confettiControllers[id] == null)
     {
       confettiControllers[id] = new ConfettiController(
@@ -49,6 +50,7 @@ class _DashboardState extends State<Dashboard> {
 
     return confettiControllers[id];
   }
+
 
   LinearGradient getLineGradient(Color color)
   {
@@ -112,27 +114,13 @@ class _DashboardState extends State<Dashboard> {
                                               child: Container(
                                                 margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
                                                 padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                                                decoration: BoxDecoration(
-                                                  gradient: getLineGradient(Color(int.parse(snapshot.data[index].color.substring(6,16)))),
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(5.0),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey[300],
-                                                      blurRadius: 10.0,
-                                                      spreadRadius: 5.0,
-                                                      offset: Offset(0.0, 0.0),
-                                                    ),
-                                                  ],
-                                                ),
+
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: <Widget>[
                                                     ConfettiWidget(
-                                                      blastDirection: pi/2,
                                                       blastDirectionality: BlastDirectionality.explosive,
-                                                      confettiController: getController(snapshot.data[index].id),
+                                                      confettiController: getController(index),
                                                       particleDrag: 0.05,
                                                       emissionFrequency: 0.05,
                                                       numberOfParticles: 40,
@@ -154,7 +142,7 @@ class _DashboardState extends State<Dashboard> {
                                                             _dbHelper.updateCompletionStatus(value, snapshot.data[index].id);
                                                             if(value)
                                                             {
-                                                              getController(snapshot.data[index].id).play();
+                                                              getController(index).play();
                                                             }
                                                           });
                                                         }
@@ -248,7 +236,20 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ],
                                                 ),
-
+                                                decoration: BoxDecoration(
+                                                  gradient: getLineGradient(Color(int.parse(snapshot.data[index].color.substring(6,16)))),
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0),
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey[300],
+                                                      blurRadius: 10.0,
+                                                      spreadRadius: 5.0,
+                                                      offset: Offset(0.0, 0.0),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                               secondaryActions: <Widget>[
                                                 SlideAction(
