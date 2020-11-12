@@ -8,6 +8,7 @@ import 'dart:math';
 import '../database_helper.dart';
 import 'addclass.dart';
 import 'addtask.dart';
+import 'filterAssignments.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -30,6 +31,7 @@ class _DashboardState extends State<Dashboard> {
   //Color _iconColor = Colors.grey;
   Map<int, dynamic> confettiControllers = new Map<int, dynamic>();
   Map<int, dynamic> iconColors = new Map<int, dynamic>();
+
   Color noteColor = Colors.white;
   @override
   void initState() {
@@ -38,15 +40,25 @@ class _DashboardState extends State<Dashboard> {
   }
   ConfettiController getController(int id)
   {
-      if(confettiControllers[id] == null)
-        {
-          confettiControllers[id] = new ConfettiController(
-            duration: new Duration(seconds: 1),
-          );
-        }
+    if(confettiControllers[id] == null)
+    {
+      confettiControllers[id] = new ConfettiController(
+        duration: new Duration(seconds: 1),
+      );
+    }
 
-      return confettiControllers[id];
+    return confettiControllers[id];
   }
+
+  LinearGradient getLineGradient(Color color)
+  {
+    print(color.toString());
+    return new LinearGradient(
+      stops: [0.015, 0.015],
+      colors: [color, Colors.white],
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +66,23 @@ class _DashboardState extends State<Dashboard> {
       //backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Your Tasks'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              //tooltip: 'Show Snackbar',
+
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FilterAssignments(_dbHelper.getTasks())),
+                ).then((value) {
+                  setState(() {});
+                });
+              },
+            ),
+
+          ],
         ),
         body: SafeArea(
             child: Container(
@@ -83,6 +112,20 @@ class _DashboardState extends State<Dashboard> {
                                               child: Container(
                                                 margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
                                                 padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+                                                decoration: BoxDecoration(
+                                                  gradient: getLineGradient(Color(int.parse(snapshot.data[index].color.substring(6,16)))),
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0),
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey[300],
+                                                      blurRadius: 10.0,
+                                                      spreadRadius: 5.0,
+                                                      offset: Offset(0.0, 0.0),
+                                                    ),
+                                                  ],
+                                                ),
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: <Widget>[
@@ -108,27 +151,27 @@ class _DashboardState extends State<Dashboard> {
                                                         onChanged:  (bool value)  {
                                                           setState(()  {
                                                             DatabaseHelper _dbHelper = DatabaseHelper();
-                                                             _dbHelper.updateCompletionStatus(value, snapshot.data[index].id);
+                                                            _dbHelper.updateCompletionStatus(value, snapshot.data[index].id);
                                                             if(value)
                                                             {
-                                                                getController(snapshot.data[index].id).play();
+                                                              getController(snapshot.data[index].id).play();
                                                             }
                                                           });
                                                         }
                                                     ),
                                                     /**
-                                                    IconButton(
+                                                        IconButton(
                                                         icon: Icon(Icons.radio_button_unchecked_outlined),
                                                         color: Colors.green[400],
                                                         onPressed: ()
                                                         {
-                                                          setState(()
-                                                          {
-                                                            icon: Icons.radio_button_checked_outlined;
-                                                          });
+                                                        setState(()
+                                                        {
+                                                        icon: Icons.radio_button_checked_outlined;
+                                                        });
                                                         }
                                                         ),
-                                                            **/
+                                                     **/
                                                     Column(
                                                       children: [
                                                         Container(
@@ -139,7 +182,7 @@ class _DashboardState extends State<Dashboard> {
                                                                 color: Colors.blueGrey[900],
                                                                 fontWeight: FontWeight.w600,
                                                                 fontSize: 15,
-                                                                decoration: TextDecoration.none),
+                                                                decoration: snapshot.data[index].isComplete == 1 ? TextDecoration.lineThrough : TextDecoration.none),
                                                           ),
                                                         ),
                                                         Container(
@@ -168,170 +211,44 @@ class _DashboardState extends State<Dashboard> {
 
 
                                                       style: TextButton.styleFrom(
-                                                        primary: iconColors[snapshot.data[index].id] = (snapshot.data[index].notes == "" ? Colors.white : Colors.grey[700])
+                                                          primary: iconColors[snapshot.data[index].id] = (snapshot.data[index].notes == "" ? Colors.white : Colors.grey[700])
                                                       ),
                                                       onPressed: () {
                                                         setState(
                                                               () {
-                                                                if(snapshot.data[index].notes != "")
-                                                                {
-                                                                Navigator.push(
+                                                            if(snapshot.data[index].notes != "")
+                                                            {
+                                                              Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                  builder: (context) => SeeNotes(snapshot.data[index].notes)));
-                                                                }
+                                                                      builder: (context) => SeeNotes(snapshot.data[index].notes)));
+                                                            }
 
                                                           },
                                                         );
                                                       },
                                                     ),
                                                     IconButton(
-                                                        icon: Icon(Icons.notifications),
-                                                        //color: Colors.orange,
-                                                        color: iconColors[snapshot.data[index].id] = (snapshot.data[index].isImportant == 1 ? Colors.orange : Colors.grey),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            DatabaseHelper _dbHelper = DatabaseHelper();
-                                                            if(iconColors[snapshot.data[index].id] == Colors.orange)
-                                                              {
-                                                                iconColors[snapshot.data[index].id] = Colors.grey;
-                                                              }
-                                                            else
-                                                              iconColors[snapshot.data[index].id] = Colors.orange;
+                                                      icon: Icon(Icons.notifications),
+                                                      //color: Colors.orange,
+                                                      color: iconColors[snapshot.data[index].id] = (snapshot.data[index].isImportant == 1 ? Colors.orange : Colors.grey),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          DatabaseHelper _dbHelper = DatabaseHelper();
+                                                          if(iconColors[snapshot.data[index].id] == Colors.orange)
+                                                          {
+                                                            iconColors[snapshot.data[index].id] = Colors.grey;
+                                                          }
+                                                          else
+                                                            iconColors[snapshot.data[index].id] = Colors.orange;
 
-                                                            _dbHelper.updateImportanceStatus(iconColors[snapshot.data[index].id] == Colors.orange, snapshot.data[index].id);
-                                                          });
-                                                          },
-                                                        ),
-                                                  ],
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    stops: [0.015, 0.015],
-                                                    colors: [Colors.green[400], Colors.white],
-                                                  ),
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(5.0),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey[300],
-                                                      blurRadius: 10.0,
-                                                      spreadRadius: 5.0,
-                                                      offset: Offset(0.0, 0.0),
+                                                          _dbHelper.updateImportanceStatus(iconColors[snapshot.data[index].id] == Colors.orange, snapshot.data[index].id);
+                                                        });
+                                                      },
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                              secondaryActions: <Widget>[
-                                              SlideAction(
-                                              child: Container(
-                                              padding: EdgeInsets.only(bottom: 10),
-                                              child: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(50),
-                                              color: Colors.red[200]),
-                                              child: Icon(Icons.delete_outline,
-                                              color: Colors.red[500]),
-                                              ),
-                                              ),
-                                              onTap: () async {
-                                              if(snapshot.data[index].id != 0) {
-                                              await _dbHelper.deleteTask(snapshot.data[index].id);
-                                              //Navigator.pop(context);
-                                              setState((){
 
-                                              });
-                                              }
-                                              },
-                                              ),
-                                              ],
-                                            )
-                                                /**
-                                                SlideAction(
-                                                  child: Container(
-                                                    padding: EdgeInsets.only(bottom: 10),
-                                                    child: Container(
-                                                      height: 35,
-                                                      width: 35,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(50),
-                                                          color: Colors.red[200]),
-                                                      child: Icon(Icons.delete_outline,
-                                                          color: Colors.red[500]),
-                                                    ),
-                                                  ),
-                                                  onTap: () => print('Delete'),
-                                                ),
-                                              ],
-                                            ),
-                                                    **/
-                                        /**
-                                            Slidable(
-                                              actionPane: SlidableDrawerActionPane(),
-                                              actionExtentRatio: 0.25,
-                                              child: Container(
-                                                margin: EdgeInsets.fromLTRB(20, 0, 20, 5),
-                                                padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Column(
-                                                      children: [
-                                                        Container(
-                                                          width: 180,
-                                                          child: Text(
-                                                            snapshot.data[index].taskName,
-                                                            style: TextStyle(
-                                                                color: Colors.blueGrey[900],
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 15),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 180,
-                                                          child: Text(
-                                                            snapshot.data[index].className,
-                                                           //"className",
-                                                            style: TextStyle(
-                                                                color: Colors.grey[400],
-                                                                fontWeight: FontWeight.w400),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 180,
-                                                          child: Text(
-                                                           snapshot.data[index].dueDate,
-                                                           //"dueDate",
-                                                            style: TextStyle(
-                                                                color: Colors.grey[400],
-                                                                fontWeight: FontWeight.w400),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Icon(Icons.chevron_right, color: Colors.grey[500]),
-                                                  ],
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    stops: [0.015, 0.015],
-                                                    colors: [Colors.orange[400], Colors.white],
-                                                  ),
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(5.0),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey[300],
-                                                      blurRadius: 10.0,
-                                                      spreadRadius: 5.0,
-                                                      offset: Offset(0.0, 0.0),
-                                                    ),
-                                                  ],
-                                                ),
                                               ),
                                               secondaryActions: <Widget>[
                                                 SlideAction(
@@ -359,8 +276,8 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                               ],
                                             )
-                                            **/
-                                            //This is the end of one class
+
+
                                         );
                                       },
                                     ),);
@@ -392,717 +309,6 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   )
                 ]))));
-  /**
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Tasks'),
 
-        /*
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            //tooltip: 'Show Snackbar',
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.filter_alt_sharp),
-            //tooltip: 'Next page',
-            onPressed: () {},
-          ),
-        ],
-        */
-      ),
-      body: SafeArea(
-        child: Container(
-          color: Colors.grey[50],
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              ListView(
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 15, left: 20, bottom: 15),
-                    child: Text(
-                      'Today',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[600]),
-                    ),
-                  ),
-
-                  //This is one item
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(Icons.radio_button_checked_outlined,
-                              color: Colors.green[400]),
-                          Column(
-                            children: [
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Finish book questions',
-                                  style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                      decoration: TextDecoration.lineThrough),
-                                ),
-                              ),
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'AP Physics C',
-                                  style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                            child: Text('See Notes'),
-                            //style: TextStyle(color: Colors.grey[400]),
-                            style: TextButton.styleFrom(
-                              primary: Colors.grey[700],
-                            ),
-                            onPressed: () {
-                              setState(
-                                    () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SeeNotes()));
-                                },
-                              );
-                            },
-                          ),
-                          Icon(Icons.notifications, color: Colors.orange[300]),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: [0.015, 0.015],
-                          colors: [Colors.green[400], Colors.white],
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            blurRadius: 10.0,
-                            spreadRadius: 5.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryActions: <Widget>[
-                      SlideAction(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.red[200]),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.red[500]),
-                          ),
-                        ),
-                        onTap: () => print('Delete'),
-                      ),
-                    ],
-                  ),
-                  //This is the end of one assignment
-
-                  //This is one item
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(Icons.radio_button_off, color: Colors.grey[400]),
-                          Column(
-                            children: [
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Send project file',
-                                  style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'World Literature',
-                                  style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'See notes',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Icon(Icons.notifications, color: Colors.grey[300]),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: [0.015, 0.015],
-                          colors: [Colors.blue[400], Colors.white],
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            blurRadius: 10.0,
-                            spreadRadius: 5.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryActions: <Widget>[
-                      SlideAction(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.red[200]),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.red[500]),
-                          ),
-                        ),
-                        onTap: () => print('Delete'),
-                      ),
-                    ],
-                  ),
-                  //This is the end of one assignment
-
-                  Container(
-                    margin: EdgeInsets.only(left: 20, bottom: 15),
-                    child: Text(
-                      'Tomorrow',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[600]),
-                    ),
-                  ),
-                  //This is one item
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(Icons.radio_button_off, color: Colors.grey[400]),
-                          Column(
-                            children: [
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Submit history FRQ',
-                                  style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Contemporary World Problems',
-                                  style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'See notes',
-                            style: TextStyle(color: Colors.grey[400]),
-                          ),
-                          Icon(Icons.notifications, color: Colors.grey[300]),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: [0.015, 0.015],
-                          colors: [Colors.red[400], Colors.white],
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            blurRadius: 10.0,
-                            spreadRadius: 5.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryActions: <Widget>[
-                      SlideAction(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.red[200]),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.red[500]),
-                          ),
-                        ),
-                        onTap: () => print('Delete'),
-                      ),
-                    ],
-                  ),
-                  //This is the end of one assignment
-
-                  //This is one item
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(Icons.radio_button_off, color: Colors.grey[400]),
-                          Column(
-                            children: [
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Finish practice quiz',
-                                  style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'AP Calculus BC',
-                                  style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'See notes',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Icon(Icons.notifications, color: Colors.grey[300]),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: [0.015, 0.015],
-                          colors: [Colors.yellow[600], Colors.white],
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            blurRadius: 10.0,
-                            spreadRadius: 5.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryActions: <Widget>[
-                      SlideAction(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.red[200]),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.red[500]),
-                          ),
-                        ),
-                        onTap: () => print('Delete'),
-                      ),
-                    ],
-                  ),
-                  //This is the end of one assignment
-
-                  Container(
-                    margin: EdgeInsets.only(left: 20, bottom: 15),
-                    child: Text(
-                      'November 1st, 2020',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[600]),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                    padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 180,
-                          child: Text(
-                            'No assignments yet today',
-                            style: TextStyle(
-                                color: Colors.grey[500],
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15),
-                          ),
-                        ),
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        stops: [0],
-                        colors: [Colors.white],
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5.0),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey[200],
-                          blurRadius: 10.0,
-                          spreadRadius: 5.0,
-                          offset: Offset(0.0, 0.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 20, bottom: 15),
-                    child: Text(
-                      'November 2nd, 2020',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[600]),
-                    ),
-                  ),
-
-                  //This is one item
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(Icons.radio_button_off, color: Colors.grey[400]),
-                          Column(
-                            children: [
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Complete Lab Entry',
-                                  style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'AP Physics C',
-                                  style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'See notes',
-                            style: TextStyle(color: Colors.grey[400]),
-                          ),
-                          Icon(Icons.notifications, color: Colors.grey[300]),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: [0.015, 0.015],
-                          colors: [Colors.green[400], Colors.white],
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            blurRadius: 10.0,
-                            spreadRadius: 5.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryActions: <Widget>[
-                      SlideAction(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.red[200]),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.red[500]),
-                          ),
-                        ),
-                        onTap: () => print('Delete'),
-                      ),
-                    ],
-                  ),
-                  //This is the end of one assignment
-
-                  //This is one item
-                  Slidable(
-                    actionPane: SlidableDrawerActionPane(),
-                    actionExtentRatio: 0.25,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(Icons.radio_button_off, color: Colors.grey[400]),
-                          Column(
-                            children: [
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'Finish Chapter 1',
-                                  style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                              ),
-                              Container(
-                                width: 180,
-                                child: Text(
-                                  'World Literature',
-                                  style: TextStyle(
-                                      color: Colors.grey[400],
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            'See notes',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Icon(Icons.notifications, color: Colors.grey[300]),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          stops: [0.015, 0.015],
-                          colors: [Colors.blue[400], Colors.white],
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(5.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            blurRadius: 10.0,
-                            spreadRadius: 5.0,
-                            offset: Offset(0.0, 0.0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    secondaryActions: <Widget>[
-                      SlideAction(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.red[200]),
-                            child: Icon(Icons.delete_outline,
-                                color: Colors.red[500]),
-                          ),
-                        ),
-                        onTap: () => print('Delete'),
-                      ),
-                    ],
-                  ),
-                  //This is the end of one assignment
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
-                    padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                          width: 180,
-                          child: Text(
-                            'See recent assignments',
-                            style: TextStyle(
-                                color: Colors.grey[600],
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                          child: Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey[500],
-                          ),
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        stops: [0],
-                        colors: [Colors.white],
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5.0),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey[200],
-                          blurRadius: 10.0,
-                          spreadRadius: 5.0,
-                          offset: Offset(0.0, 0.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(80, 0, 80, 40),
-                    padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                          width: 180,
-                          child: Text(
-                            'Load more assignments',
-                            style: TextStyle(
-                                color: Colors.grey[600],
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                          child: Icon(
-                            Icons.refresh,
-                            color: Colors.grey[500],
-                          ),
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        stops: [0],
-                        colors: [Colors.white],
-                      ),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(5.0),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey[200],
-                          blurRadius: 10.0,
-                          spreadRadius: 5.0,
-                          offset: Offset(0.0, 0.0),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 15)
-                ],
-              ),
-              Positioned(
-                bottom: 10.0,
-                right: 10.0,
-                child: FloatingActionButton(
-                  child: Icon(Icons.add),
-                  backgroundColor: Colors.orangeAccent,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddTask()),
-                    ).then((value) {
-                      setState(() {});
-                    });
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-      **/
   }
 }

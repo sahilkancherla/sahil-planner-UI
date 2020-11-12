@@ -11,11 +11,6 @@ class AddClass extends StatefulWidget {
   _AddClassState createState() => _AddClassState();
 }
 
-class Item {
-  const Item(this.name);
-  final String name;
-}
-
 class _AddClassState extends State<AddClass> {
   bool isSwitched = false;
   Item selectedUser;
@@ -24,16 +19,17 @@ class _AddClassState extends State<AddClass> {
 
   String tempClassName = "";
   String tempTeacherName = "";
-  List<Item> users = <Item>[
-    const Item('Class 1'),
-    const Item('Class 2'),
-    const Item('Class 3'),
-    const Item('Class 4'),
-    const Item('Class 5'),
-    const Item('Class 6'),
-    const Item('Class 7'),
-  ];
-
+  /**
+      List<Item> users = <Item>[
+      const Item('Class 1'),
+      const Item('Class 2'),
+      const Item('Class 3'),
+      const Item('Class 4'),
+      const Item('Class 5'),
+      const Item('Class 6'),
+      const Item('Class 7'),
+      ];
+   **/
   void changeColor(Color color) => setState(() => currentColor = color);
   void changeColors(List<Color> colors) => setState(() => currentColors = colors);
 
@@ -151,7 +147,6 @@ class _AddClassState extends State<AddClass> {
                             content: SingleChildScrollView(
                               child: ColorPicker(
                                 pickerColor: currentColor,
-
                                 onColorChanged: changeColor,
                                 colorPickerWidth: 300.0,
                                 pickerAreaHeightPercent: 0.7,
@@ -197,7 +192,7 @@ class _AddClassState extends State<AddClass> {
             GestureDetector(
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
-                ClassObject newClassObject = ClassObject(className: tempClassName, teacherName: tempTeacherName);
+                ClassObject newClassObject = ClassObject(className: tempClassName, teacherName: tempTeacherName, color: currentColor.toString());
                 await _dbHelper.insertClass(newClassObject);
                 Navigator.of(context).pop();
               },

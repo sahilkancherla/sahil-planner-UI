@@ -20,8 +20,9 @@ class AddTask extends StatefulWidget {
 }
 
 class Item {
-  const Item(this.name);
+  const Item(this.name, this.id);
   final String name;
+  final int id;
 }
 
 class _AddTaskState extends State<AddTask> {
@@ -37,31 +38,31 @@ class _AddTaskState extends State<AddTask> {
   void getClassNames()
   {
     DatabaseHelper _db = DatabaseHelper();
-    Future<List<String>> classNames = _db.getClassNames();
+    Future<List<Map<String, dynamic>>> classNames = _db.getClassNames();
     classNames.then((value) {
       for (int i = 0; i < value.length; i++)
-        {
-          users.add(new Item(value[i]));
-        }
+      {
+        users.add(new Item((value[i])['className'], (value[i])['id']));
+      }
     });
   }
-/**
-  toSync(Future<List<Item>> f) {
-    Object v = null;
-    f.then((v0){v = v0;});
-    return v;
-  }
 
-  List<Item> users = <Item>[
-    const Item('Class 1'),
-    const Item('Class 2'),
-    const Item('Class 3'),
-    const Item('Class 4'),
-    const Item('Class 5'),
-    const Item('Class 6'),
-    const Item('Class 7'),
-  ];
-**/
+  /**
+      toSync(Future<List<Item>> f) {
+      Object v = null;
+      f.then((v0){v = v0;});
+      return v;
+      }
+      List<Item> users = <Item>[
+      const Item('Class 1'),
+      const Item('Class 2'),
+      const Item('Class 3'),
+      const Item('Class 4'),
+      const Item('Class 5'),
+      const Item('Class 6'),
+      const Item('Class 7'),
+      ];
+   **/
   _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
@@ -309,10 +310,10 @@ class _AddTaskState extends State<AddTask> {
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
                 if(stringDate == null)
-                  {
-                    stringDate = DateTime.now().toString();
-                  }
-                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0));
+                {
+                  stringDate = DateTime.now().toString();
+                }
+                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0), classID: selectedClass.id);
                 int i = 10;
                 print(newTaskObject.taskName);
                 await _dbHelper.insertTask(newTaskObject);
