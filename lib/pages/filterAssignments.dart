@@ -72,7 +72,7 @@ class _FilterAssignmentsState extends State<FilterAssignments> {
                             Expanded(
                                 child: FutureBuilder(
                                     initialData: [],
-                                    future: _dbHelper.getTasks(),
+                                    future: _dbHelper.getTasksByDate(selectedDate),
                                     //future: _dbHelper.getTasksWithDate(selectedDate),
                                     builder: (context, snapshot){
                                       return SingleChildScrollView(

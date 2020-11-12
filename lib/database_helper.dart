@@ -114,7 +114,28 @@ class DatabaseHelper {
       );
     });
   }
+  Future<List<TaskObject>> getTasksByDate(DateTime date) async {
+    Database _db = await database();
+    //List<Map<String, dynamic>> taskMap = await _db.query(
+    //    'tasks', orderBy: 'dueDate ASC');
+    List<dynamic> args = new List<dynamic>();
+    args.add(date.toString().substring(0, 11) + '00:00:00.000');
 
+
+    List<Map<String, dynamic>> taskMap = await _db.rawQuery('SELECT * from tasks INNER JOIN classes ON tasks.classID=classes.id where dueDate = ? order by dueDate ASC', args);
+    return List.generate(taskMap.length, (index) {
+      return TaskObject(id: taskMap[index]['id'],
+          taskName: taskMap[index]['taskName'],
+          notes: taskMap[index]['notes'],
+          dueDate: taskMap[index]['dueDate'],
+          className: taskMap[index]['className'],
+          isComplete: taskMap[index]['isComplete'],
+          isImportant: taskMap[index]['isImportant'],
+          classID: taskMap[index]['classID'],
+          color: taskMap[index]['color']
+      );
+    });
+  }
   Future<void> deleteTask(int id) async {
     Database _db = await database();
     // Get a reference to the database.
