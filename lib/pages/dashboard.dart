@@ -94,20 +94,7 @@ class _DashboardState extends State<Dashboard> {
                                               child: Container(
                                                 margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
                                                 padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
-                                                decoration: BoxDecoration(
-                                                  gradient: getLineGradient(Color(int.parse(snapshot.data[index].color.substring(6,16)))),
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(5.0),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey[300],
-                                                      blurRadius: 10.0,
-                                                      spreadRadius: 5.0,
-                                                      offset: Offset(0.0, 0.0),
-                                                    ),
-                                                  ],
-                                                ),
+
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: <Widget>[
@@ -230,7 +217,20 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ],
                                                 ),
-
+                                                decoration: BoxDecoration(
+                                                  gradient: getLineGradient(Color(int.parse(snapshot.data[index].color.substring(6,16)))),
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0),
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey[300],
+                                                      blurRadius: 10.0,
+                                                      spreadRadius: 5.0,
+                                                      offset: Offset(0.0, 0.0),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                               secondaryActions: <Widget>[
                                                 SlideAction(

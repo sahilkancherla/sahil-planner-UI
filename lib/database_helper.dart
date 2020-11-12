@@ -8,7 +8,7 @@ import 'models/taskObject.dart';
 class DatabaseHelper {
   Future<Database> database() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'planner6.db'),
+      join(await getDatabasesPath(), 'planner7.db'),
 
       onCreate: (db, version) async{
         // Run the CREATE TABLE statement on the database.
