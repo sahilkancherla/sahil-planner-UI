@@ -8,6 +8,7 @@ import 'dart:math';
 import '../database_helper.dart';
 import 'addclass.dart';
 import 'addtask.dart';
+import 'filterAssignments.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -65,6 +66,23 @@ class _DashboardState extends State<Dashboard> {
       //backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Your Tasks'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.calendar_today),
+              //tooltip: 'Show Snackbar',
+
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FilterAssignments(_dbHelper.getTasks())),
+                ).then((value) {
+                  setState(() {});
+                });
+              },
+            ),
+
+          ],
         ),
         body: SafeArea(
             child: Container(
@@ -258,6 +276,7 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                               ],
                                             )
+
                                             /**
                                                 SlideAction(
                                                 child: Container(
@@ -370,6 +389,7 @@ class _DashboardState extends State<Dashboard> {
                                                 )
                                              **/
                                             //This is the end of one class
+
                                         );
                                       },
                                     ),);
@@ -401,6 +421,7 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   )
                 ]))));
+
     /**
         @override
         Widget build(BuildContext context) {
@@ -1113,5 +1134,6 @@ class _DashboardState extends State<Dashboard> {
         ),
         );
      **/
+
   }
 }

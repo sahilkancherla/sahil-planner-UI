@@ -20,16 +20,18 @@ class _AddClassState extends State<AddClass> {
   String tempClassName = "";
   String tempTeacherName = "";
   /**
-  List<Item> users = <Item>[
-    const Item('Class 1'),
-    const Item('Class 2'),
-    const Item('Class 3'),
-    const Item('Class 4'),
-    const Item('Class 5'),
-    const Item('Class 6'),
-    const Item('Class 7'),
-  ];
-**/
+
+      List<Item> users = <Item>[
+      const Item('Class 1'),
+      const Item('Class 2'),
+      const Item('Class 3'),
+      const Item('Class 4'),
+      const Item('Class 5'),
+      const Item('Class 6'),
+      const Item('Class 7'),
+      ];
+   **/
+
   void changeColor(Color color) => setState(() => currentColor = color);
   void changeColors(List<Color> colors) => setState(() => currentColors = colors);
 
