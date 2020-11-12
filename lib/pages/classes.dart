@@ -95,7 +95,7 @@ class _ClassesState extends State<Classes> {
                                             decoration: BoxDecoration(
                                               gradient: LinearGradient(
                                                 stops: [0.015, 0.015],
-                                                colors: [Colors.orange[400], Colors.white],
+                                                colors: [Color(int.parse(snapshot.data[index].color.substring(6,16))), Colors.white],
                                               ),
                                               borderRadius: BorderRadius.all(
                                                 Radius.circular(5.0),
