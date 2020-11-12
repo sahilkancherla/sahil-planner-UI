@@ -86,34 +86,35 @@ class DatabaseHelper {
     await _db.update('tasks', taskMap, where: 'id = ?', whereArgs: whereArgs);
   }
 
-    Future<List<TaskObject>> getTasks() async {
-      Database _db = await database();
-      //List<Map<String, dynamic>> taskMap = await _db.query(
-      //    'tasks', orderBy: 'dueDate ASC');
-      List<Map<String, dynamic>> taskMap = await _db.rawQuery('SELECT * from tasks INNER JOIN classes ON tasks.classID=classes.id order by dueDate ASC');
-      return List.generate(taskMap.length, (index) {
-        return TaskObject(id: taskMap[index]['id'],
-            taskName: taskMap[index]['taskName'],
-            notes: taskMap[index]['notes'],
-            dueDate: taskMap[index]['dueDate'],
-            className: taskMap[index]['className'],
-            isComplete: taskMap[index]['isComplete'],
-            isImportant: taskMap[index]['isImportant'],
-            classID: taskMap[index]['classID'],
-            color: taskMap[index]['color']
-        );
-      });
-    }
+  Future<List<TaskObject>> getTasks() async {
+    Database _db = await database();
+    //List<Map<String, dynamic>> taskMap = await _db.query(
+    //    'tasks', orderBy: 'dueDate ASC');
+    List<Map<String, dynamic>> taskMap = await _db.rawQuery('SELECT * from tasks INNER JOIN classes ON tasks.classID=classes.id order by dueDate ASC');
+    return List.generate(taskMap.length, (index) {
+      return TaskObject(id: taskMap[index]['id'],
+          taskName: taskMap[index]['taskName'],
+          notes: taskMap[index]['notes'],
+          dueDate: taskMap[index]['dueDate'],
+          className: taskMap[index]['className'],
+          isComplete: taskMap[index]['isComplete'],
+          isImportant: taskMap[index]['isImportant'],
+          classID: taskMap[index]['classID'],
+          color: taskMap[index]['color']
 
-    Future<void> deleteTask(int id) async {
-      Database _db = await database();
-      // Get a reference to the database.
-
-      await _db.delete(
-        'tasks',
-        where: "id = ?",
-        whereArgs: [id],
       );
-    }
+    });
+  }
+
+  Future<void> deleteTask(int id) async {
+    Database _db = await database();
+    // Get a reference to the database.
+
+    await _db.delete(
+      'tasks',
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
 
 }
