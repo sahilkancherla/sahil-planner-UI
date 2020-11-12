@@ -28,8 +28,7 @@ class _FilterAssignmentsState extends State<FilterAssignments> {
   Map<int, dynamic> iconColors = new Map<int, dynamic>();
   Color noteColor = Colors.white;
   Map<int, dynamic> confettiControllers = new Map<int, dynamic>();
-  DateTime selectedDate = DateTime.now();
-
+  DateTime selectedDate = DateTime.parse(DateTime.now().toString().substring(0, 11) + "00:00:00.000");
   String stringDate;
   String displayDate;
 

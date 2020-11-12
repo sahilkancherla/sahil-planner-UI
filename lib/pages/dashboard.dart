@@ -40,6 +40,7 @@ class _DashboardState extends State<Dashboard> {
   }
   ConfettiController getController(int id)
   {
+
     if(confettiControllers[id] == null)
     {
       confettiControllers[id] = new ConfettiController(
@@ -49,6 +50,7 @@ class _DashboardState extends State<Dashboard> {
 
     return confettiControllers[id];
   }
+
 
   LinearGradient getLineGradient(Color color)
   {
@@ -117,9 +119,8 @@ class _DashboardState extends State<Dashboard> {
                                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: <Widget>[
                                                     ConfettiWidget(
-                                                      blastDirection: pi/2,
                                                       blastDirectionality: BlastDirectionality.explosive,
-                                                      confettiController: getController(snapshot.data[index].id),
+                                                      confettiController: getController(index),
                                                       particleDrag: 0.05,
                                                       emissionFrequency: 0.05,
                                                       numberOfParticles: 40,
@@ -141,7 +142,7 @@ class _DashboardState extends State<Dashboard> {
                                                             _dbHelper.updateCompletionStatus(value, snapshot.data[index].id);
                                                             if(value)
                                                             {
-                                                              getController(snapshot.data[index].id).play();
+                                                              getController(index).play();
                                                             }
                                                           });
                                                         }
