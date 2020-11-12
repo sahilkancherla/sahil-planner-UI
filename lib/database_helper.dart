@@ -90,7 +90,16 @@ class DatabaseHelper {
     Database _db = await database();
     //List<Map<String, dynamic>> taskMap = await _db.query(
     //    'tasks', orderBy: 'dueDate ASC');
-    List<Map<String, dynamic>> taskMap = await _db.rawQuery('SELECT * from tasks INNER JOIN classes ON tasks.classID=classes.id order by dueDate ASC');
+    List<Map<String, dynamic>> taskMap = await _db.rawQuery('''
+    SELECT tasks.id,
+    tasks.taskName,
+    tasks.notes,
+    tasks.dueDate, 
+    tasks.className, 
+    tasks.isComplete, 
+    tasks.isImportant, 
+    tasks.classID,
+    classes.color from tasks INNER JOIN classes ON tasks.classID=classes.id order by dueDate ASC''');
     return List.generate(taskMap.length, (index) {
       return TaskObject(id: taskMap[index]['id'],
           taskName: taskMap[index]['taskName'],
