@@ -41,21 +41,11 @@ class _AddTaskState extends State<AddTask> {
     Future<List<Map<String, dynamic>>> classNames = _db.getClassNames();
     classNames.then((value) {
       for (int i = 0; i < value.length; i++)
-
       {
         users.add(new Item((value[i])['className'], (value[i])['id']));
       }
     });
   }
-
-
-/**
-  toSync(Future<List<Item>> f) {
-    Object v = null;
-    f.then((v0){v = v0;});
-    return v;
-  }
-
 
   /**
       toSync(Future<List<Item>> f) {
@@ -320,11 +310,9 @@ class _AddTaskState extends State<AddTask> {
               onTap: () async {
                 DatabaseHelper _dbHelper = DatabaseHelper();
                 if(stringDate == null)
-
                 {
                   stringDate = DateTime.now().toString();
                 }
-
                 TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0), classID: selectedClass.id);
                 int i = 10;
                 print(newTaskObject.taskName);
