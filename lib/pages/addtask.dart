@@ -20,8 +20,9 @@ class AddTask extends StatefulWidget {
 }
 
 class Item {
-  const Item(this.name);
+  const Item(this.name, this.id);
   final String name;
+  final int id;
 }
 
 class _AddTaskState extends State<AddTask> {
@@ -37,14 +38,15 @@ class _AddTaskState extends State<AddTask> {
   void getClassNames()
   {
     DatabaseHelper _db = DatabaseHelper();
-    Future<List<String>> classNames = _db.getClassNames();
+    Future<List<Map<String, dynamic>>> classNames = _db.getClassNames();
     classNames.then((value) {
       for (int i = 0; i < value.length; i++)
         {
-          users.add(new Item(value[i]));
+          users.add(new Item((value[i])['className'], (value[i])['id']));
         }
     });
   }
+
 /**
   toSync(Future<List<Item>> f) {
     Object v = null;
@@ -312,7 +314,7 @@ class _AddTaskState extends State<AddTask> {
                   {
                     stringDate = DateTime.now().toString();
                   }
-                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0));
+                TaskObject newTaskObject = new TaskObject(taskName: tempTaskName, notes: tempNotes, className: selectedClass.name, dueDate: stringDate, isImportant: (isSwitched ? 1 : 0), classID: selectedClass.id);
                 int i = 10;
                 print(newTaskObject.taskName);
                 await _dbHelper.insertTask(newTaskObject);

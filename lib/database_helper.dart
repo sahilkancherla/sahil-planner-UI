@@ -8,13 +8,13 @@ import 'models/taskObject.dart';
 class DatabaseHelper {
   Future<Database> database() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'planner3.db'),
+      join(await getDatabasesPath(), 'planner6.db'),
 
       onCreate: (db, version) async{
         // Run the CREATE TABLE statement on the database.
 
-        await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT, color INTEGER)");
-        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT, isComplete TINYINT, isImportant TINYINT)");
+        await db.execute("CREATE TABLE classes(id INTEGER PRIMARY KEY, className TEXT, teacherName TEXT, color TEXT)");
+        await db.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY, taskName TEXT, notes TEXT, className TEXT, dueDate TEXT, isComplete TINYINT, isImportant TINYINT, classID INTEGER)");
 
         return db;
 
@@ -38,18 +38,15 @@ class DatabaseHelper {
     });
   }
 
-  Future<List<String>> getClassNames() async  {
-    List<String> classNames = new List<String>();
+
+  Future<List<Map<String, dynamic>>> getClassNames() async  {
     List<String> columnNames = new List<String>();
+    columnNames.add('id');
     columnNames.add('className');
     Database _db = await database();
-    List<Map<String, dynamic>> result = await _db.query('classes', distinct: true, columns: columnNames);
-    for(int i = 0; i < result.length; i++)
-      {
-        classNames.add((result[i])['className']);
-      }
-    return classNames;
+    return await _db.query('classes', distinct: true, columns: columnNames);
   }
+
 
   Future<void> deleteClass(int id) async {
     Database _db = await database();
@@ -83,6 +80,7 @@ class DatabaseHelper {
       "isImportant": importanceStatus ? 1 : 0
     };
 
+
     List<dynamic> whereArgs = new List<dynamic>();
     whereArgs.add(id);
     await _db.update('tasks', taskMap, where: 'id = ?', whereArgs: whereArgs);
@@ -90,18 +88,20 @@ class DatabaseHelper {
 
     Future<List<TaskObject>> getTasks() async {
       Database _db = await database();
-      List<Map<String, dynamic>> taskMap = await _db.query(
-          'tasks', orderBy: 'dueDate ASC');
-
+      //List<Map<String, dynamic>> taskMap = await _db.query(
+      //    'tasks', orderBy: 'dueDate ASC');
+      List<Map<String, dynamic>> taskMap = await _db.rawQuery('SELECT * from tasks INNER JOIN classes ON tasks.classID=classes.id order by dueDate ASC');
       return List.generate(taskMap.length, (index) {
-        //DateTime parsedDate = DateTime.parse(taskMap[index]['dueDate']);
         return TaskObject(id: taskMap[index]['id'],
             taskName: taskMap[index]['taskName'],
             notes: taskMap[index]['notes'],
             dueDate: taskMap[index]['dueDate'],
             className: taskMap[index]['className'],
             isComplete: taskMap[index]['isComplete'],
-            isImportant: taskMap[index]['isImportant']);
+            isImportant: taskMap[index]['isImportant'],
+            classID: taskMap[index]['classID'],
+            color: taskMap[index]['color']
+        );
       });
     }
 
