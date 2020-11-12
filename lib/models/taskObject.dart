@@ -15,4 +15,6 @@ class TaskObject {
     return {'id': id, 'taskName': taskName, 'notes': notes, 'className': className, 'dueDate': dueDate, 'isComplete': isComplete, 'isImportant': isImportant,'classID': classID};
   }
 
+
 }
+

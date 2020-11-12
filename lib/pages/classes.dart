@@ -135,12 +135,14 @@ class _ClassesState extends State<Classes> {
                                                       },
                                                     ),
                                                   ],
+
                                                 )
                                               //This is the end of one class
                                             ));
                                       },
                                     ),);
                                 }
+
                             )
                         )
 

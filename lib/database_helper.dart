@@ -101,6 +101,7 @@ class DatabaseHelper {
           isImportant: taskMap[index]['isImportant'],
           classID: taskMap[index]['classID'],
           color: taskMap[index]['color']
+
       );
     });
   }
